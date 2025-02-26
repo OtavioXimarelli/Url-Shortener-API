@@ -14,8 +14,24 @@ services:
       - AWS_REGION=us-east-1
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+    depends_on:
+      - redis
     networks:
       - url-shortener-network
+
+  redis:
+    image: redis:alpine
+    container_name: url-shortener-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - url-shortener-network
+
+volumes:
+  redis_data:
 networks:
   url-shortener-network:
     driver: bridge
