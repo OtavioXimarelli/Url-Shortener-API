@@ -4,6 +4,7 @@ package com.otaviodev.Encurtador.de.URLs.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.otaviodev.Encurtador.de.URLs.Service.UrlRedirectService;
 import com.otaviodev.Encurtador.de.URLs.Service.UrlShortnerService;
+import com.otaviodev.Encurtador.de.URLs.model.UrlModel;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,8 @@ public class UrlController {
     }
 
     @PostMapping("/shorten")
-    public ResponseEntity<String> shortenUrl(@RequestBody String url) throws JsonProcessingException {
-        String shortCode = urlShortnerService.shortenUrl(url);
+    public ResponseEntity<String> shortenUrl(@RequestBody UrlModel url) throws JsonProcessingException {
+        String shortCode = urlShortnerService.shortenUrl(url.getUrl());
         return ResponseEntity.ok(shortCode);
     }
 

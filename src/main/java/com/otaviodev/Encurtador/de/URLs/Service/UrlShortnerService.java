@@ -24,10 +24,10 @@ public class UrlShortnerService {
     }
 
     public String shortenUrl(String url) throws JsonProcessingException {
-        String shortCode = UUID.randomUUID().toString().substring(0, 8);
+        String shortCode = UUID.randomUUID().toString().substring(0, 5);
 
         Map<String, Object> urlData = Map.of(
-                "shortKey", shortCode,
+                "key", shortCode,
                 "url", url
         );
 
