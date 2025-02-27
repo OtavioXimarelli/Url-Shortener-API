@@ -17,7 +17,6 @@ public class UrlController {
     private final UrlRedirectService urlRedirectService;
     private final UrlShortnerService urlShortnerService;
 
-
     public UrlController(UrlRedirectService urlRedirectService, UrlShortnerService urlShortnerService) {
         this.urlRedirectService = urlRedirectService;
         this.urlShortnerService = urlShortnerService;
@@ -30,14 +29,16 @@ public class UrlController {
     }
 
     @GetMapping("/{key}")
-    public void redirectToUrl(@PathVariable String key, HttpServletResponse response) throws IOException {
+    public void redirectToUrl(@PathVariable String key, HttpServletResponse response) {
         try {
-            String originalUrl = urlRedirectService.getUrl(key, response);
+            String originalUrl = urlRedirectService.getUrl(key);
             response.sendRedirect(originalUrl);
-        } catch (RuntimeException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "URL not found");
+        } catch (Exception e) {
+            try {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "URL não encontrada");
+            } catch (IOException ex) {
+                throw new RuntimeException("Erro ao processar redirecionamento", ex);
+            }
         }
-
-
     }
 }
