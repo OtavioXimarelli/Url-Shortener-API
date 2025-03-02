@@ -19,17 +19,6 @@ services:
     networks:
       - url-shortener-network
 
-  redis:
-    image: redis:alpine
-    container_name: url-shortener-redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - url-shortener-network
-
 volumes:
   redis_data:
 networks:
