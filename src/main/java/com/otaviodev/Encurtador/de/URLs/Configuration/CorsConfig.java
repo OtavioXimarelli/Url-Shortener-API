@@ -11,8 +11,8 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("GET",  "POST")
+                        .allowedOrigins("https://encurtador-de-url-dun.vercel.app/")
+                        .allowedMethods("GET", "OPTIONS", "POST")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
