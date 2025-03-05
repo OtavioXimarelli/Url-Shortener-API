@@ -1,6 +1,5 @@
 package com.otaviodev.Encurtador.de.URLs.Service;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -8,13 +7,10 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-
 import java.util.Map;
 import java.util.UUID;
 
 @Service
-
-
 public class UrlShortnerService {
     private final S3Client s3Client;
     private final String bucketName = "otavio-urlshortner-bucket";
@@ -24,15 +20,19 @@ public class UrlShortnerService {
     }
 
     public String shortenUrl(String url) throws JsonProcessingException {
-        String key = UUID.randomUUID().toString().substring(0, 5);
+
+        String key = UUID.randomUUID().toString().substring(0, 8);
+
 
         Map<String, String> urlData = Map.of(
-                "key", key,
+                "shortKey", key,
                 "url", url
         );
 
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(urlData);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(urlData);
+
 
         s3Client.putObject(
                 PutObjectRequest.builder()
@@ -41,6 +41,7 @@ public class UrlShortnerService {
                         .build(),
                 RequestBody.fromString(json)
         );
+
         return key;
     }
 }
