@@ -8,6 +8,7 @@ import com.otaviodev.Encurtador.de.URLs.model.UrlModel;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 
@@ -28,11 +29,11 @@ public class UrlController {
         return ResponseEntity.ok(key);
     }
 
-    @GetMapping("/{key}")
-    public void redirectToUrl(@PathVariable String key, HttpServletResponse response) {
+    @GetMapping("/{shortKey}")
+    public RedirectView redirectToUrl(@PathVariable String shortKey, HttpServletResponse response) {
         try {
-            String originalUrl = urlRedirectService.getUrl(key);
-            response.sendRedirect(originalUrl);
+            String originalUrl = urlRedirectService.getUrl(shortKey);
+            return new RedirectView(originalUrl);
         } catch (Exception e) {
             try {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "URL não encontrada");
