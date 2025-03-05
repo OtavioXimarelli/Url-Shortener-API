@@ -41,5 +41,6 @@ public class UrlController {
                 throw new RuntimeException("Erro ao processar redirecionamento", ex);
             }
         }
+        return null;
     }
 }
