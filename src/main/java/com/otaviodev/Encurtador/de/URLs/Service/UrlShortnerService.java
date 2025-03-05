@@ -24,22 +24,23 @@ public class UrlShortnerService {
     }
 
     public String shortenUrl(String url) throws JsonProcessingException {
-        String shortCode = UUID.randomUUID().toString().substring(0, 5);
+        String key = UUID.randomUUID().toString().substring(0, 5);
 
-        Map<String, Object> urlData = Map.of(
-                "key", shortCode,
+        Map<String, String> urlData = Map.of(
+                "key", key,
                 "url", url
         );
 
-        String json = new ObjectMapper().writeValueAsString(urlData);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(urlData);
 
         s3Client.putObject(
                 PutObjectRequest.builder()
                         .bucket(bucketName)
-                        .key(shortCode + ".json")
+                        .key(key + ".json")
                         .build(),
                 RequestBody.fromString(json)
         );
-        return shortCode;
+        return key;
     }
 }

@@ -24,8 +24,8 @@ public class UrlController {
 
     @PostMapping("/shorten")
     public ResponseEntity<String> shortenUrl(@RequestBody UrlModel url) throws JsonProcessingException {
-        String shortCode = urlShortnerService.shortenUrl(url.getUrl());
-        return ResponseEntity.ok(shortCode);
+        String key = urlShortnerService.shortenUrl(url.getUrl());
+        return ResponseEntity.ok(key);
     }
 
     @GetMapping("/{key}")
