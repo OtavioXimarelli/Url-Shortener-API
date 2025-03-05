@@ -1,6 +1,7 @@
 package com.otaviodev.Encurtador.de.URLs.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -14,9 +15,11 @@ import java.util.UUID;
 public class UrlShortnerService {
     private final S3Client s3Client;
     private final String bucketName = "otavio-urlshortner-bucket";
+    private final ObjectMapper objectMapper;
 
-    public UrlShortnerService(S3Client s3Client) {
+    public UrlShortnerService(S3Client s3Client, ObjectMapper objectMapper) {
         this.s3Client = s3Client;
+        this.objectMapper = objectMapper;
     }
 
     public String shortenUrl(String url) throws JsonProcessingException {
@@ -24,24 +27,33 @@ public class UrlShortnerService {
         String key = UUID.randomUUID().toString().substring(0, 8);
 
 
-        Map<String, String> urlData = Map.of(
-                "shortKey", key,
-                "url", url
-        );
+        String actualUrl = url;
+        if (url.trim().startsWith("url")) {
+            try {
+                Map<String, String> urlMap = objectMapper.readValue(url, new TypeReference<Map<String, String>>() {
+                });
+                if (urlMap.containsKey("url")) {
+                    actualUrl = urlMap.get("url");
+                }
+            } catch (Exception ex) {
+                System.out.println("Erro ao processar redirecionamento");
+            }
 
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(urlData);
+            Map<String, String> urlData = Map.of(
+                    "key", key,
+                    "url", actualUrl
+            );
 
-
-        s3Client.putObject(
-                PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key + ".json")
-                        .build(),
-                RequestBody.fromString(json)
-        );
-
+            String jsonContent = objectMapper.writeValueAsString(urlData);
+            s3Client.putObject(
+                    PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(key + "json")
+                            .build(),
+                    RequestBody.fromString(jsonContent)
+            );
+        }
         return key;
     }
 }
