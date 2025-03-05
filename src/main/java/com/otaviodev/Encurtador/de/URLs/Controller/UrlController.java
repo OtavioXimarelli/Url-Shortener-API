@@ -29,7 +29,7 @@ public class UrlController {
         return ResponseEntity.ok(key);
     }
 
-    @GetMapping("/{shortKey}")
+    @GetMapping("/redirect/{shortKey}")
     public RedirectView redirectToUrl(@PathVariable String shortKey, HttpServletResponse response) {
         try {
             String originalUrl = urlRedirectService.getUrl(shortKey);
